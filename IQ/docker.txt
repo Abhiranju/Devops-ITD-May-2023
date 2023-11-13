@@ -1,7 +1,7 @@
   1  * Entrypoint in Docker?
   2  * CMD vs Entrypoint ?
   3  * ADD and Copy ?
-COPY and ADD 
+        COPY and ADD 
         “Both copy and add instruction is used to copy files and directories from 
         host machine build location to the image and the container created from it.”
     
@@ -14,32 +14,118 @@ COPY and ADD
         ADD <source_path_from_build_context> <destination_inside_image>
 
   4  * At the time of docker build –t cmd execution if you press CTRL+C, what happens ?
+      If you press CTRL+C during the docker build process, it sends an interrupt signal (SIGINT) to the build process.It's generally a good practice to avoid interrupting the docker build process unless 
+      necessary.
   5  * Docker file size is 2GB and need to reduce the size ? what will you do ?
+      a)Use a Smaller Base Image:
+         Choose a smaller base image. Alpine Linux is a popular choice for its small size.
+      b)Minimize Layers:
+        Combine multiple commands into a single RUN instruction to reduce the number of layers.
+      c)Multi-Stage Builds:
+        Use multi-stage builds to reduce the final image size. Build your application in one image and then copy only the necessary artifacts to a smaller base image.
   6  * Diff bw layers and image ?
+      In the context of Docker, an image consists of a series of layers, and these layers represent the file system changes made at different steps in the Dockerfile.
+         Layers:
+          * A layer in Docker is the basic building block of an image.
+          * Each instruction in a Dockerfile creates a new layer.
+         Image:
+          * An image is composed of multiple layers stacked on top of each other.
+          * An image is a lightweight, stand-alone, executable package that includes everything needed to run a piece of software.
   7  * If you give multiple entrypoints in Docker file, which will be executed and what happened to previous ones ?
+       If you provide multiple ENTRYPOINT instructions, only the last one in the Dockerfile will take effect. Each ENTRYPOINT instruction replaces the previous one.
+       If you want to provide multiple commands to be executed as the entrypoint, you can use the shell form of the ENTRYPOINT instruction:
+        Dockerfile
+        Copy code
+        FROM ubuntu:latest
+        ENTRYPOINT echo "Hello" && echo "World"
   8  * By default in which user the container starts to execute cmds ?
+       root user.
   9  * Docker socket ?
+        Docker daemon socket, is a communication endpoint that Docker clients use to interact with the Docker daemon. The Docker daemon (dockerd) is a background process responsible for managing Docker 
+        containers on a system.
+        The default Docker socket is a Unix domain socket, typically located at /var/run/docker.sock
   10 * what is container Runtime in Docker ?
+       a container runtime is responsible for running and managing containers. The default container runtime used by Docker is called containerd. It handles tasks such as container creation, container 
+       management, and image distribution.
   11 * How do you mount a file system in docker container ?
+       To mount a file system into a Docker container, you can use the -v or --volume option when running the docker run command. This option allows you to specify a volume.
+       docker run -v /host/path:/container/path my_image
   12 * Write a Dockerfile and push to dockerhub.
+       a) docker tag <old_image> <new image>
+       b) docker login 
+       c) docker push <username>/<repo_name>:<tagname>
   13 * docker file structure
+        it typically consists of a series of instructions that are used to build a Docker image.
+         # Use a base image
+          FROM base_image:tag
+        # Set the working directory inside the container
+          WORKDIR /path/to/working/directory
+        # Copy files or directories from the host to the container
+          COPY source destination
+        # Run a command in the container (executed during image build)
+          RUN command
+        # Set environment variable(s)
+          ENV key=value
+        # Expose a port that the container will listen on at runtime
+          EXPOSE port_number
+        # Define the default command to run when the container starts
+          CMD ["executable", "param1", "param2"]
+        # Additional metadata (not executed during image build)
+          LABEL key="value"
+        # Specify the user that the image should run as
+          USER username
+        # Specify volume(s) for persistent data
+          VOLUME /path/to/volume
+        # Define an entrypoint, which is the default command to run when the container starts
+          ENTRYPOINT ["executable", "param1", "param2"]
   14 * multistage dockerfile script 
+          that allows you to build a smaller and more efficient Docker image by using multiple FROM instructions in a single Dockerfile. ach FROM instruction starts a new build stage, and you can copy              only the necessary artifacts from the previous stage.
   15 * dockerfile to install java 
+        # Use a base image with Java
+          FROM openjdk:11-jre-slim
+        # Set the working directory
+          WORKDIR /app
+        # Copy your Java application JAR file
+          COPY your-app.jar .
+        # Set the default command to run your application
+          CMD ["java", "-jar", "your-app.jar"]
   16 * From command
   17 * Publish & Expose
   18 * command to publish & expose 
+       docker run -p host_port:container_port your_imag
   19 * docker container
-  20 * diff b/w cmd & entrypoint
+        A container is a set of isolated processes and its resources in a host machine which is isolated from all the other process”. 
+  20 * diff b/w cmd & entrypoint?
+        Both CMD and ENTRYPOINT are used to define the default execution command of the container .
+         - If we use both CMD and ENTRYPOINT in the same Dockerfile, then ENTRYPOINT gets the highest priority and the command defined using CMD will be as parameters to ENTRYPOINT.
+         - CMD can be completely overridden at the runtime But ENTRYPOINT can't be overridden at the runtime.
   21 * difference between cmd and run
+         - CMD
+            used to define the default execution command of the container (the command which will be executed in the container as main process).
+         - RUN 
+            Normal shell command or the commands supported by the base image are executed using this instruction.
+            we can have n number of RUN in a single Dockerfile.
   22 * If previous night the container had stopped working and terminated, how will you collect logs when you even dont have volume attach to it
+        docker logs <container_name_or_id>
   23 * What are security measures you took to secure the docker image
+      a) Use Official Base Images:
+      b) Keep Images and Software Up-to-Date:
+      c) Secure Dockerfile and Build Context:
+      d) Secure Dockerfile and Build Context:
+      e) Use COPY Instead of ADD:
   24 * Which scanning mechanism you are using,to scan the images regularly
-  25 * Do you use docker swam
+  25 * Do you use docker swam?
+        Docker Swarm, often referred to as Docker Swarm Mode, is a native clustering and orchestration solution for Docker. It allows you to create and manage a swarm of Docker nodes, turning them into a 
+        single, virtual Docker host. This enables you to deploy and manage containerized applications at scale, distributing them across a cluster of machines.
   26 * Dockerfile
-  27 * Entrypoint , cmd 
-  28 * Dockerfile
+      Dockerfile is used to create custom images by using any stock image or other image as base image. In Dockerfile we can write some set of instructions to update any image.”
+      To create image from Dockerfile
+       [docker build -t my_ubuntu ].
   29 * How u create docker image from Dockerfile?
+        docker build -t your_image_name .
   30 * Difference between docker image and container?
+       a Docker image is a static, immutable blueprint that defines an application, while a Docker container is a dynamic, runnable instance of that image. Images are used to create containers, and 
+       containers are the actively running instances.
   31 * Namespace cgroup
   32 * I have created a custom container , how can I deliver it to the other users?
   33 * Where u store docker images in project?

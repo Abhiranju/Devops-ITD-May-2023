@@ -40,7 +40,7 @@ Worker node components
                        through docker API (CRI).     
             - work of kubelet is to create and run the pods. Always report the status of the worker node 
               and each pod to the API server. (uses a tool called cAdvisor)
-            - Kubelet is the one that runs probes.    
+            - Kubelet is the one that runs probes. (Probes in Kubernetes are mechanisms used to determine the health of containers running in a Pod.)    
         
         kube service proxy 
             (in k8s service means networking)

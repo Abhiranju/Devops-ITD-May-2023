@@ -12,7 +12,7 @@ The architecture of k8s differs from the master and worker node
             - The API server has a watch mechanism for watching the changes in the cluster.
             
         2. etcd 
-            - ectd is a distributed, consistent key-value store used for 
+            - etcd is a distributed, consistent key-value store used for 
               storing the complete cluster information/data.
             - ectd contains data such as configuration management of cluster,
              distributed work and basically complete cluster information.            
